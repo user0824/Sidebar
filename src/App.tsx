@@ -6,11 +6,11 @@ import Board from './components/Board';
 function App() {
   return (
     <div className='flex flex-col h-screen bg-gray-100 game-container'>
-      <header className='h-24 bg-white border-b border-gray-200 flex items-center justify-between px-10 app-header'>
+      <header className='h-48 bg-white border-b border-gray-200 flex items-center justify-between px-4 app-header'>
         <div className='font-bold text-5xl text-blue-600 app-name'>Sidebar</div>
         <div className='flex items-center space-x-4 user-controls'>
           <button className='text-gray-600 hover:text-gray-800'>
-            <span className='text-xl'>Settings</span>
+            <span className='text-sm'>Settings</span>
           </button>
         </div>
       </header>
