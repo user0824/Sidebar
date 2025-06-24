@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDraggable } from '@dnd-kit/core';
 
 // This si the sample component list. We can add Austins generated custom icons later!
 const systemComponents = [
@@ -22,6 +23,51 @@ const systemComponents = [
   },
 ];
 
+interface DraggableComponentProps {
+  component: (typeof systemComponents)[0];
+}
+
+const DraggableComponent: React.FC<DraggableComponentProps> = ({
+  component,
+}) => {
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: component.id,
+      data: {
+        type: 'component',
+        component,
+      },
+    });
+
+  // now we need to apply a transform to the component that will follow the drag state
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
+    : undefined;
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className={`
+        ${component.color} 
+        border border-gray-300 rounded-lg p-3
+        flex items-center space-x-2 
+        cursor-grab active:cursor-grabbing  // Shows grab cursor
+        hover:shadow-md transition-shadow
+        ${isDragging ? 'opacity-50' : ''}   // Fades while dragging
+      `}
+    >
+      <span className='text-lg'>{component.icon}</span>
+      <span className='text-sm font-medium text-gray-700'>
+        {component.name}
+      </span>
+    </div>
+  );
+};
+
 const ComponentList: React.FC = () => {
   return (
     <div className='p-4'>
@@ -32,20 +78,7 @@ const ComponentList: React.FC = () => {
 
       <div className='space-y-2'>
         {systemComponents.map((component) => (
-          <div
-            key={component.id}
-            className={`
-              ${component.color} 
-              border border-gray-300 rounded-lg p-3
-              flex items-center space-x-2 cursor-pointer
-              hover:shadow-md transition-shadow
-            `}
-          >
-            <span className='text-lg'>{component.icon}</span>
-            <span className='text-sm font-medium text-gray-700'>
-              {component.name}
-            </span>
-          </div>
+          <DraggableComponent key={component.id} component={component} />
         ))}
       </div>
     </div>
