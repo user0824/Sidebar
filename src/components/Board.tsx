@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import SystemBoard from './SystemBoard';
 import ScratchPad from './ScratchPad';
 
-const Board: React.FC = () => {
+interface BoardProps {
+  placedComponents: any[];
+}
+
+const Board: React.FC<BoardProps> = ({ placedComponents }) => {
   const [activeTab, setActiveTab] = useState<'SystemBoard' | 'ScratchPad'>(
     'SystemBoard'
   );
@@ -40,7 +44,11 @@ const Board: React.FC = () => {
 
       {/* Board content container */}
       <div className='flex-1 p-4 overflow-y-auto board-content-container'>
-        {activeTab === 'SystemBoard' ? <SystemBoard /> : <ScratchPad />}
+        {activeTab === 'SystemBoard' ? (
+          <SystemBoard placedComponents={placedComponents} />
+        ) : (
+          <ScratchPad />
+        )}
       </div>
     </div>
   );
