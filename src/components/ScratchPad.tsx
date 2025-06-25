@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
-import hljs from 'highlight.js';
 
 const ScratchPad: React.FC = () => {
   const [value, setValue] = useState('');
@@ -18,7 +17,6 @@ const ScratchPad: React.FC = () => {
       [{ indent: '-1' }, { indent: '+1' }],
       ['code-block'],
     ],
-    syntax: { hljs },
   };
 
   return (
