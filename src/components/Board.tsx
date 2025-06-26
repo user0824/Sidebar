@@ -5,9 +5,8 @@
 import React, { useState } from 'react';
 import ReactFlowBoard from './ReactFlowBoard';
 import ScratchPad from './ScratchPad';
+import { useBoard } from '../context/BoardContext';
 import {
-  Node,
-  Edge,
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
@@ -25,11 +24,10 @@ import {
 } from 'lucide-react';
 
 const Board: React.FC = () => {
+  const { nodes, setNodes, edges, setEdges } = useBoard();
   const [activeTab, setActiveTab] = useState<'SystemBoard' | 'ScratchPad'>(
     'SystemBoard'
   );
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [edges, setEdges] = useState<Edge[]>([]);
 
   const onNodesChange = (changes: NodeChange[]) =>
     setNodes((nds) => applyNodeChanges(changes, nds));
@@ -38,7 +36,16 @@ const Board: React.FC = () => {
     setEdges((eds) => applyEdgeChanges(changes, eds));
 
   const onConnect = (params: Connection) =>
-    setEdges((eds) => addEdge(params, eds));
+    setEdges((eds) =>
+      addEdge(
+        {
+          ...params,
+          animated: true,
+          style: { strokeWidth: 1.5, stroke: '#888' },
+        },
+        eds
+      )
+    );
 
   // ----------------------------------------------------------------------
   // >> SYSTEM DESIGN TAB << //

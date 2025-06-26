@@ -15,17 +15,31 @@ import {
   ReactFlowProvider,
   ReactFlowInstance,
   Connection,
+  Handle,
+  Position,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
+// styling for the handle/connection points
+const handleStyle = {
+  background: '#fff',
+  width: 12,
+  height: 12,
+  borderRadius: '50%',
+  border: '1px solid #999',
+  pointerEvents: 'auto',
+  boxShadow: '0 0 0 12px rgba(0,0,0,0)',
+};
 // Custom node that keeps the emoji and color from the component library
 const CustomNode: React.FC<NodeProps> = ({ data }) => {
   return (
     <div
       className={`${data.color} border border-gray-400 rounded-lg px-3 py-2 shadow-md flex items-center space-x-1`}
     >
+      <Handle type='target' position={Position.Left} style={handleStyle} />
       <span className='text-sm'>{data.icon}</span>
       <span className='text-xs font-medium text-gray-700'>{data.name}</span>
+      <Handle type='source' position={Position.Right} style={handleStyle} />
     </div>
   );
 };

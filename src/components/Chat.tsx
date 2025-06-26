@@ -1,4 +1,6 @@
 import React from 'react';
+// > Imported context from system board here
+import { useBoard } from '../context/BoardContext';
 
 const Chat: React.FC = () => {
   return (
