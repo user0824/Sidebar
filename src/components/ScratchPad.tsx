@@ -21,7 +21,7 @@ const ScratchPad: React.FC = () => {
 
   return (
     <div className='h-full bg-yellow-50 border border-gray-200 rounded-lg flex flex-col'>
-      <div className='p-4 border-b border-gray-200 flex-shrink-0'>
+      <div className='p-4 border-b border-gray-200 shrink-0'>
         <h3 className='text-lg font-bold text-yellow-500'>Scratch Pad</h3>
         <p className='text-sm text-gray-600 mt-1'>
           Write and format your notes
