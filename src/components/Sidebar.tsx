@@ -1,4 +1,9 @@
+// ----------------------------------------------------------------------
+// >> SIDEBAR << //
+// ----------------------------------------------------------------------
+
 import React, { useState } from 'react';
+import { Layout, MessageCircle, Circle } from 'lucide-react';
 import ComponentList from './ComponentList';
 import Chat from './Chat';
 
@@ -8,33 +13,45 @@ const Sidebar: React.FC = () => {
   );
 
   return (
-    <div className='h-full flex flex-col sidebar-container'>
-      <div className='border-b border-gray-200 sidebar-tabs-header'>
-        <div className='flex w-full sidebar-tab-buttons'>
+    <div className='h-full flex flex-col'>
+      {/* TAB NAVIGATION */}
+      <div className='p-6'>
+        <div className='flex bg-gray-100/60 rounded-xl p-1'>
           <button
-            className={`flex-1 py-2 px-4 text-center text-sm font-medium border-b-2 ${
-              activeTab === 'ComponentList'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } sidebar-tab-button components-tab-button`}
             onClick={() => setActiveTab('ComponentList')}
+            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+              activeTab === 'ComponentList'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-800 hover:bg-indigo-100/40'
+            }`}
           >
-            Components
+            {/* COMPONENTS */}
+            <div className='flex items-center justify-center space-x-2'>
+              <Layout className='w-4 h-4' />
+              <span>Components</span>
+            </div>
           </button>
+
           <button
-            className={`flex-1 py-2 px-4 text-center text-sm font-medium border-b-2 ${
-              activeTab === 'Chat'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-            } sidebar-tab-button chat-tab-button`}
             onClick={() => setActiveTab('Chat')}
+            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+              activeTab === 'Chat'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-800 hover:bg-indigo-100/40'
+            }`}
           >
-            Chat
+            {/* AI CHATBOT */}
+            <div className='flex items-center justify-center space-x-2'>
+              <MessageCircle className='w-4 h-4' />
+              <span>AI</span>
+              <Circle className='w-2 h-2 text-green-500 fill-current animate-pulse' />
+            </div>
           </button>
         </div>
       </div>
 
-      <div className='flex-1 overflow-y-auto sidebar-content-container'>
+      {/* CONTENT AREA */}
+      <div className='flex-1 overflow-hidden'>
         {activeTab === 'ComponentList' ? <ComponentList /> : <Chat />}
       </div>
     </div>
