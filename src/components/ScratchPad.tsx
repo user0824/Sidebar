@@ -39,16 +39,16 @@ const ScratchPad: React.FC = () => {
   // * RENDER * //
   // ------------------------------------------------------------------------------------------------
   return (
-    <div className='h-full bg-yellow-50 border border-gray-200 rounded-lg flex flex-col'>
-      <div className='p-4 border-b border-gray-200 shrink-0'>
-        <h3 className='text-lg font-bold text-yellow-500'>Scratch Pad</h3>
-        <p className='text-sm text-gray-600 mt-1'>
+    <div className='h-full bg-yellow-50 border-gray-200 flex flex-col'>
+      <div className='border-b border-gray-200 shrink-0'>
+        {/* <h3 className='text-lg font-bold text-yellow-500'>Scratch Pad</h3> */}
+        {/* <p className='text-sm text-gray-600 mt-1'>
           Write and format your notes
-        </p>
+        </p> */}
       </div>
 
       <div
-        className='flex-1 p-4 scratchpad-content'
+        className='flex-1 px-0 scratchpad-content'
         style={{ overflow: 'hidden' }}
       >
         <ReactQuill
@@ -70,7 +70,7 @@ const ScratchPad: React.FC = () => {
           setValue('');
           localStorage.removeItem(STORAGE_KEY);
         }}
-        className='ml-4 px-3 py-1 text-sm bg-red-100 text-red-600 border border-red-300 rounded hover:bg-red-200 transition'
+        className='ml-0 px-3 py-1 text-md bg-red-100 text-red-600 border border-red-300 hover:bg-red-200 transition'
       >
         Clear
       </button>
