@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+// ------------------------------------------------------------------------------------------------
+// >> SCRATCH PAD << //
+// ------------------------------------------------------------------------------------------------
+import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
 const ScratchPad: React.FC = () => {
-  const [value, setValue] = useState('');
+  const STORAGE_KEY = 'scratchpad-content';
 
-  // * Toolbar configuration
+  // ------------------------------------------------------------------------------------------------
+  // * NOTES LOCAL STORAGE * //
+  // ------------------------------------------------------------------------------------------------
+  const [value, setValue] = useState(() => {
+    return localStorage.getItem(STORAGE_KEY) || '';
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, value);
+  }, [value]);
+
+  // ------------------------------------------------------------------------------------------------
+  // * TOOLBAR CONFIGURATION * //
+  // ------------------------------------------------------------------------------------------------
   const modules = {
     toolbar: [
       [{ font: [] }],
@@ -19,6 +35,9 @@ const ScratchPad: React.FC = () => {
     ],
   };
 
+  // ------------------------------------------------------------------------------------------------
+  // * RENDER * //
+  // ------------------------------------------------------------------------------------------------
   return (
     <div className='h-full bg-yellow-50 border border-gray-200 rounded-lg flex flex-col'>
       <div className='p-4 border-b border-gray-200 shrink-0'>
@@ -45,6 +64,16 @@ const ScratchPad: React.FC = () => {
           }}
         />
       </div>
+      {/* CLEAR BUTTON */}
+      <button
+        onClick={() => {
+          setValue('');
+          localStorage.removeItem(STORAGE_KEY);
+        }}
+        className='ml-4 px-3 py-1 text-sm bg-red-100 text-red-600 border border-red-300 rounded hover:bg-red-200 transition'
+      >
+        Clear
+      </button>
     </div>
   );
 };
