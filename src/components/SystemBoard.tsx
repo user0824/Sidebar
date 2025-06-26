@@ -1,3 +1,4 @@
+// @ts-nocheck -- legacy file kept for reference, not part of active build
 import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
 

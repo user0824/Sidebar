@@ -1,7 +1,6 @@
 import React from 'react';
-import { useDraggable } from '@dnd-kit/core';
 
-// This si the sample component list. We can add Austins generated custom icons later!
+// This is the sample component list. We can add Austin's generated custom icons later!
 const systemComponents = [
   { id: 'web-server', name: 'Web Server', icon: '🖥️', color: 'bg-blue-100' },
   { id: 'database', name: 'Database', icon: '🗄️', color: 'bg-green-100' },
@@ -27,37 +26,22 @@ interface DraggableComponentProps {
   component: (typeof systemComponents)[0];
 }
 
-const DraggableComponent: React.FC<DraggableComponentProps> = ({
-  component,
-}) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: component.id,
-      data: {
-        type: 'component',
-        component,
-      },
-    });
+const DraggableComponent: React.FC<DraggableComponentProps> = ({ component }) => {
+  const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+    event.dataTransfer.setData('application/reactflow', JSON.stringify(component));
+    event.dataTransfer.effectAllowed = 'move';
+  };
 
-  // now we need to apply a transform to the component that will follow the drag state
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
+      draggable
+      onDragStart={handleDragStart}
       className={`
-        ${component.color} 
+        ${component.color}
         border border-gray-300 rounded-lg p-3
         flex items-center space-x-2 
-        cursor-grab active:cursor-grabbing  // Shows grab cursor
+        cursor-grab active:cursor-grabbing
         hover:shadow-md transition-shadow
-        ${isDragging ? 'opacity-50' : ''}   // Fades while dragging
       `}
     >
       <span className='text-lg'>{component.icon}</span>
