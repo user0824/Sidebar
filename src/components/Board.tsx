@@ -150,7 +150,7 @@ const Board: React.FC = () => {
       <div className='flex-1 overflow-hidden'>
         {activeTab === 'SystemBoard' ? (
           <div className='h-full p-0'>
-            <div className='h-full bg-gradient-to-br from-gray-50 to-white border-2 border-dashed border-gray-200 overflow-hidden relative'>
+            <div className='h-full  overflow-hidden relative'>
               {/* GRID PATTERN BACKGROUND */}
               <div
                 className='absolute inset-0 opacity-30 pointer-events-none'

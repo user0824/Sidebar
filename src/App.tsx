@@ -31,12 +31,12 @@ function App() {
         {/* MAIN CONTENT */}
         <div className='flex gap-6 p-6 h-[calc(100vh-88px)]'>
           {/* SIDEBAR */}
-          <div className='w-80 bg-white/70 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden'>
+          <div className='w-80 bg-white/70 backdrop-blur-xl rounded-l-2xl rounded-r-sm shadow-2xl border border-white/20 overflow-hidden'>
             <Sidebar />
           </div>
 
           {/* BOARD */}
-          <div className='flex-1 bg-white/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 overflow-hidden'>
+          <div className='flex-1 bg-white/50 backdrop-blur-xl rounded-r-2xl rounded-l-sm shadow-2xl border border-white/20 overflow-hidden'>
             <Board />
           </div>
         </div>
