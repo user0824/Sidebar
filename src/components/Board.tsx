@@ -29,7 +29,7 @@ const Board: React.FC = () => {
     setEdges((eds) => applyEdgeChanges(changes, eds));
 
   const onConnect = (params: Connection) =>
-    setEdges((eds) => addEdge(params, eds));
+    setEdges((eds) => addEdge({ ...params, animated: true }, eds));
 
   return (
     <div className='h-full flex flex-col board-container'>

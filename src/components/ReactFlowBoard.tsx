@@ -15,6 +15,8 @@ import {
   ReactFlowProvider,
   ReactFlowInstance,
   Connection,
+  Handle,
+  Position,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -22,12 +24,21 @@ import '@xyflow/react/dist/style.css';
 const CustomNode: React.FC<NodeProps> = ({ data }) => {
   return (
     <div
-      className={
-        `${data.color} border border-gray-400 rounded-lg px-3 py-2 shadow-md flex items-center space-x-1`
-      }
+      className={`${data.color} border border-gray-400 rounded-lg px-3 py-2 shadow-md flex items-center space-x-1`}
     >
+      {/* Input handle on the left */}
+      <Handle
+        type='target'
+        position={Position.Left}
+        style={{ background: '#555' }}
+      />
       <span className='text-sm'>{data.icon}</span>
       <span className='text-xs font-medium text-gray-700'>{data.name}</span>
+      <Handle
+        type='source'
+        position={Position.Right}
+        style={{ background: '#555' }}
+      />
     </div>
   );
 };
@@ -117,4 +128,4 @@ const ReactFlowBoard: React.FC<ReactFlowBoardProps> = ({
   );
 };
 
-export default ReactFlowBoard; 
+export default ReactFlowBoard;
