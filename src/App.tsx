@@ -1,29 +1,48 @@
-import React from 'react';
+// ----------------------------------------------------------------------
+// >> APP << //
+// ----------------------------------------------------------------------
+// import React from 'react';
+import { Settings } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Board from './components/Board';
 
-// App renders the sidebar on the left and the board on the right
 function App() {
   return (
-    <div className='flex flex-col h-screen bg-gray-100 game-container'>
-      <header className='h-48 bg-white border-b border-gray-200 flex items-center justify-between px-4 app-header'>
-        <div className='font-bold text-5xl text-blue-600 app-name'>Sidebar</div>
-        <div className='flex items-center space-x-4 user-controls'>
-          <button className='text-gray-600 hover:text-gray-800'>
-            <span className='text-sm'>Settings</span>
-          </button>
-        </div>
-      </header>
+    <div className='min-h-screen bg-gradient-to-br from-indigo-800 via-purple-400 to-sky-300'>
+      {/* BG OVERLAY */}
+      <div className='min-h-screen backdrop-blur-sm bg-white/10'>
+        {/* HEADER */}
+        <header className='bg-white/10 backdrop-blur-md border-b border-white/20 px-6 py-4'>
+          <div className='flex items-center justify-between'>
+            <div className='flex items-center space-x-3'>
+              <h1 className='text-5xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent'>
+                Sidebar
+              </h1>
+            </div>
+            {/* SETTINGS BUTTON */}
+            <div className='flex items-center space-x-3'>
+              <button className='p-2 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all duration-200 hover:scale-105'>
+                <Settings className='w-5 h-5' />
+              </button>
+            </div>
+          </div>
+        </header>
 
-      <div className='flex flex-1 main-content'>
-        <div className='w-1/4 bg-white border-r border-gray-200 sidebar-border'>
-          <Sidebar />
-        </div>
-        <div className='w-3/4 board-border'>
-          <Board />
+        {/* MAIN CONTENT */}
+        <div className='flex gap-6 p-6 h-[calc(100vh-88px)]'>
+          {/* SIDEBAR */}
+          <div className='w-80 bg-white/70 backdrop-blur-xl rounded-l-2xl rounded-r-sm shadow-2xl border border-white/20 overflow-hidden'>
+            <Sidebar />
+          </div>
+
+          {/* BOARD */}
+          <div className='flex-1 bg-white/50 backdrop-blur-xl rounded-r-2xl rounded-l-sm shadow-2xl border border-white/20 overflow-hidden'>
+            <Board />
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
 export default App;
