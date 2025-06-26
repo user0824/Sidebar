@@ -1,15 +1,35 @@
 import React, { useState } from 'react';
-import SystemBoard from './SystemBoard';
+import ReactFlowBoard from './ReactFlowBoard';
 import ScratchPad from './ScratchPad';
+import {
+  Node,
+  Edge,
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
+  EdgeChange,
+  NodeChange,
+  Connection,
+} from '@xyflow/react';
 
-interface BoardProps {
-  placedComponents: any[];
-}
-
-const Board: React.FC<BoardProps> = ({ placedComponents }) => {
+const Board: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'SystemBoard' | 'ScratchPad'>(
     'SystemBoard'
   );
+
+  // Persist nodes/edges across tab switches
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
+
+  // Callbacks pulled up so we can pass to child
+  const onNodesChange = (changes: NodeChange[]) =>
+    setNodes((nds) => applyNodeChanges(changes, nds));
+
+  const onEdgesChange = (changes: EdgeChange[]) =>
+    setEdges((eds) => applyEdgeChanges(changes, eds));
+
+  const onConnect = (params: Connection) =>
+    setEdges((eds) => addEdge(params, eds));
 
   return (
     <div className='h-full flex flex-col board-container'>
@@ -45,7 +65,14 @@ const Board: React.FC<BoardProps> = ({ placedComponents }) => {
       {/* Board content container */}
       <div className='flex-1 p-4 overflow-y-auto board-content-container'>
         {activeTab === 'SystemBoard' ? (
-          <SystemBoard placedComponents={placedComponents} />
+          <ReactFlowBoard
+            nodes={nodes}
+            edges={edges}
+            setNodes={setNodes}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+          />
         ) : (
           <ScratchPad />
         )}
