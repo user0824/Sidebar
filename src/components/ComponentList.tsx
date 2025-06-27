@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
 // >> COMPONENT LIST << //
 // ----------------------------------------------------------------------
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { SystemIcons } from '../assets';
 
 // ----------------------------------------------------------------------
@@ -149,19 +149,75 @@ const DraggableComponent: React.FC<DraggableComponentProps> = ({
 };
 
 const ComponentList: React.FC = () => {
+  const [components, setComponents] =
+    useState<typeof systemComponents>(systemComponents);
+  const [showInput, setShowInput] = useState(false);
+  const [newName, setNewName] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // handler to toggle input visibility for when user wants to add a custom component
+  const handleShowInput = () => {
+    setShowInput(true);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  };
+  // modularized function to add new component either throughadd button or enter key
+  const addNewComponent = () => {
+    if (!newName.trim()) return;
+    const id = newName.trim().toLowerCase().replace(/\s+/g, '-');
+    const newComp = {
+      id,
+      name: newName,
+      icon: '',
+      color: 'bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200',
+      hoverColor: 'hover:from-gray-100 hover:to-gray-200 hover:border-gray-300',
+      description: '',
+      category: 'Custom',
+    };
+    setComponents((prev) => [...prev, newComp]);
+    setNewName('');
+    setShowInput(false);
+  };
+
   return (
     <div className='h-full flex flex-col'>
-      {/* HEADER */}
-      {/* <div className='p-0 border-b border-gray-200/50'>
-        <p className='text-sm text-gray-600 leading-relaxed'>
-          Drag components to the board to start designing your architecture
-        </p>
-      </div> */}
+      {/* INPUT FIELD OUTSIDE COMPONENT LIST */}
+      {showInput ? (
+        <div className='flex items-center gap-2 px-6 pt-1'>
+          <input
+            ref={inputRef}
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                addNewComponent();
+              }
+            }}
+            className='flex-1 border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-violet-500 focus:outline-none'
+            placeholder='Component name'
+          />
+          <button
+            onClick={addNewComponent}
+            className='bg-violet-500 text-white px-3 py-1 rounded'
+          >
+            Add
+          </button>
+          <button onClick={() => setShowInput(false)} className='text-gray-500'>
+            X
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={handleShowInput}
+          className='flex items-center gap-1 text-violet-800 hover:text-blue-700 justify-center w-full px-6 pt-1'
+        >
+          <span className='text-xl'>+</span> Add Custom Component
+        </button>
+      )}
 
       {/* COMPONENT GRID */}
-      <div className='flex-1 px-6 pt-2 overflow-y-auto'>
+      <div className='flex-1 px-6 pt-4 overflow-y-auto'>
         <div className='space-y-3'>
-          {systemComponents.map((component) => (
+          {components.map((component) => (
             <DraggableComponent key={component.id} component={component} />
           ))}
         </div>
