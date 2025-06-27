@@ -88,14 +88,14 @@ const Board: React.FC = () => {
       {/* UPDATED Header with Actions */}
       <div className='p-6'>
         <div className='flex items-center justify-between'>
-          {/* TABS */}
-          <div className='flex bg-gray-100/60 rounded-xl p-1'>
+          {/* TABS - Updated with glassmorphism toggle design */}
+          <div className='flex bg-white/10 border border-white/20 rounded-xl p-1 backdrop-blur-sm text-md font-medium'>
             <button
               onClick={() => setActiveTab('SystemBoard')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+              className={`px-4 py-2.5 rounded-lg transition-all duration-200 ${
                 activeTab === 'SystemBoard'
-                  ? 'bg-white text-indigo-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-indigo-100/40'
+                  ? 'bg-white/20 text-indigo-600 shadow-sm backdrop-blur-sm font-semibold'
+                  : 'text-white/70 hover:text-white hover:bg-white/10'
               }`}
             >
               <div className='flex items-center space-x-2'>
@@ -105,10 +105,10 @@ const Board: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('ScratchPad')}
-              className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+              className={`px-4 py-2.5 rounded-lg transition-all duration-200 ${
                 activeTab === 'ScratchPad'
-                  ? 'bg-white text-indigo-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-indigo-100/40'
+                  ? 'bg-white/20 text-indigo-600 shadow-sm backdrop-blur-sm font-semibold'
+                  : 'text-white/70 hover:text-white hover:bg-white/10'
               }`}
             >
               <div className='flex items-center space-x-2'>
@@ -125,28 +125,28 @@ const Board: React.FC = () => {
                 {/* CLEAR BOARD */}
                 <button
                   onClick={clearBoard}
-                  className='p-2.5 rounded-xl bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 transition-all duration-200'
+                  className='p-2.5 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:text-red-400 transition-all duration-200 hover:scale-105'
                   title='Clear Board'
                 >
-                  <Trash2 className='w-4 h-4' />
+                  <Trash2 className='w-5 h-5' />
                 </button>
                 {/* DOWNLOAD BOARD */}
                 <button
                   onClick={exportBoard}
-                  className='p-2.5 rounded-xl bg-indigo-100 hover:bg-indigo-200 text-indigo-600 hover:text-indigo-700 transition-all duration-200'
+                  className='p-2.5 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:text-indigo-600 transition-all duration-200 hover:scale-105'
                   title='Export Design'
                 >
-                  <Download className='w-4 h-4' />
+                  <Download className='w-5 h-5' />
                 </button>
               </>
             ) : (
               /* CLEAR SCRATCH PAD */
               <button
                 onClick={clearScratchPad}
-                className='p-2.5 rounded-xl bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 transition-all duration-200'
+                className='p-2.5 rounded-xl bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:text-red-400 transition-all duration-200 hover:scale-105'
                 title='Clear Scratch Pad'
               >
-                <Trash2 className='w-4 h-4' />
+                <Trash2 className='w-5 h-5' />
               </button>
             )}
           </div>
@@ -173,20 +173,21 @@ const Board: React.FC = () => {
                 /* EMPTY BOARD */
                 <div className='absolute inset-0 flex items-center justify-center pointer-events-none'>
                   <div className='text-center max-w-md'>
-                    <div className='w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center'>
-                      <Monitor className='w-10 h-10 text-blue-500' />
+                    <div className='w-20 h-20 mx-auto mb-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center'>
+                      <Monitor className='w-10 h-10 text-indigo-600/80' />
                     </div>
-                    <h3 className='text-xl font-semibold text-gray-800 mb-3'>
+                    <h3 className='text-xl font-semibold text-gray-800/70 mb-3'>
                       Design Your Architecture
                     </h3>
-                    <p className='text-gray-600 mb-6 leading-relaxed'>
+                    <p className='text-gray-600/60 mb-6 leading-relaxed'>
                       Drag components from the sidebar to start building your
                       system architecture. Connect components to show data flow
                       and relationships.
                     </p>
-                    <div className='flex items-center justify-center text-sm text-gray-500'>
-                      <ArrowUp className='w-4 h-4 mr-2' />
+                    <div className='flex items-center justify-center text-sm text-gray-600/60'>
+                      <ArrowUp className='w-4 h-4 mr-2 animate-bounce' />
                       <span>Start by dragging a component here</span>
+                      <ArrowUp className='w-4 h-4 ml-2 animate-bounce' />
                     </div>
                   </div>
                 </div>
