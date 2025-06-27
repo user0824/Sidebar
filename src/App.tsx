@@ -7,6 +7,7 @@ import Sidebar from './components/Sidebar';
 import Board from './components/Board';
 import { BoardContext } from './context/BoardContext';
 import { Node, Edge } from '@xyflow/react';
+import { ChatProvider } from './context/ChatContext';
 
 function App() {
   const [nodes, setNodes] = React.useState<Node[]>([]);
@@ -37,7 +38,9 @@ function App() {
           <div className='flex gap-6 p-6 h-[calc(100vh-88px)]'>
             {/* SIDEBAR */}
             <div className='w-80 bg-white/70 backdrop-blur-xl rounded-l-2xl rounded-r-sm shadow-2xl border border-white/20 overflow-hidden'>
-              <Sidebar />
+              <ChatProvider>
+                <Sidebar />
+              </ChatProvider>
             </div>
 
             {/* BOARD */}
