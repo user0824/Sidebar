@@ -37,8 +37,11 @@ const Board: React.FC = () => {
   const onEdgesChange = (changes: EdgeChange[]) =>
     setEdges((eds) => applyEdgeChanges(changes, eds));
 
-  const onConnect = (params: Connection) =>
+  const onConnect = (params: Connection) => {
+    // Disallow self-loops
+    if (params.source === params.target) return;
     setEdges((eds) => addEdge(params, eds));
+  };
 
   // ----------------------------------------------------------------------
   // >> SYSTEM DESIGN TAB << //
