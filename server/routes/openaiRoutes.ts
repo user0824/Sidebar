@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   chatHandler,
   streamChatHandler,
-} from '../controllers/openaiController.ts';
+} from '../controllers/openaiController';
 
 const router = Router();
 

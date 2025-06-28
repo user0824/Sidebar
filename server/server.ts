@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import openaiRoutes from './routes/openaiRoutes.ts';
+import openaiRoutes from './routes/openaiRoutes';
 dotenv.config();
 
 const app = express();
