@@ -1,9 +1,15 @@
 import { Router } from 'express';
-import { chatHandler } from '../controllers/openaiController.ts';
+import {
+  chatHandler,
+  streamChatHandler,
+} from '../controllers/openaiController.ts';
 
 const router = Router();
 
-// POST /api to handle AI chat requests
+// POST /api - Regular chat (keep for backwards compatibility)
 router.post('/', chatHandler);
+
+// POST /api/stream - Streaming chat
+router.post('/stream', streamChatHandler);
 
 export default router;

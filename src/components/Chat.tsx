@@ -1,5 +1,4 @@
-import React from 'react';
-import axios from 'axios';
+import React, { useEffect, useRef } from 'react';
 import { Send, Bot, User } from 'lucide-react';
 import { useChatContext, Message } from '../context/ChatContext';
 import { useBoard } from '../context/BoardContext';
@@ -8,6 +7,24 @@ import { Node as FlowNode, Edge as FlowEdge } from '@xyflow/react';
 const Chat: React.FC = () => {
   const { messages, setMessages, input, setInput, isLoading, setIsLoading } =
     useChatContext();
+
+  // Ref for auto-scrolling
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isLoading]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   // helper to strip html tags from the scratchpad html (very lightweight)
   const stripHtml = (html: string) => {
@@ -24,8 +41,10 @@ const Chat: React.FC = () => {
     const componentsPart = `Components: ${nodeNames.join(', ')}.`;
     if (!edges.length) return `${componentsPart} No connections.`;
     const edgeStrings = edges.map((e) => {
-      const sourceName = nodes.find((n) => n.id === e.source)?.data?.name || e.source;
-      const targetName = nodes.find((n) => n.id === e.target)?.data?.name || e.target;
+      const sourceName =
+        nodes.find((n) => n.id === e.source)?.data?.name || e.source;
+      const targetName =
+        nodes.find((n) => n.id === e.target)?.data?.name || e.target;
       return `${sourceName}→${targetName}`;
     });
     return `${componentsPart} Connections: ${edgeStrings.join(', ')}.`;
@@ -33,54 +52,143 @@ const Chat: React.FC = () => {
 
   const { nodes, edges } = useBoard();
 
-  // send message handler
+  // Streaming message handler
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
-    const newUserMessage: Message = {
+    if (!input.trim() || isLoading) return;
+
+    const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: input,
     };
-    const updatedMessages = [...messages, newUserMessage];
+
+    // Add user message immediately
+    const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setIsLoading(true);
+
+    // Create AI message placeholder
+    const aiMessageId = (Date.now() + 1).toString();
+    const aiMessage: Message = {
+      id: aiMessageId,
+      role: 'assistant',
+      content: '',
+    };
+
+    // Add empty AI message to show it's thinking
+    setMessages((prev) => [...prev, aiMessage]);
+
+    const currentInput = input;
+    setInput('');
+
     try {
+      // Create abort controller for this request
+      abortControllerRef.current = new AbortController();
+
       const boardSummary = summariseBoard(nodes, edges);
       const scratchPadHtml = localStorage.getItem('scratchpad-content') || '';
-      const scratchPad = stripHtml(scratchPadHtml).slice(0, 1000); // hard cap to 1k chars
+      const scratchPad = stripHtml(scratchPadHtml).slice(0, 1000);
 
-      const { data } = await axios.post<AIResponse>('http://localhost:3001/api', {
-        messages: updatedMessages,
-        message: input,
-        boardSummary,
-        scratchPad,
+      const response = await fetch('http://localhost:3001/api/stream', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: updatedMessages,
+          message: currentInput,
+          boardSummary,
+          scratchPad,
+        }),
+        signal: abortControllerRef.current.signal,
       });
-      const newAIMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: data.reply,
-      };
-      setMessages((prev) => [...prev, newAIMessage]);
-    } catch (error) {
-      console.error('Error fetching AI response', error);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (!reader) {
+        throw new Error('No reader available');
+      }
+
+      let accumulatedContent = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6);
+
+            if (data === '[DONE]') {
+              break;
+            }
+
+            try {
+              const parsed = JSON.parse(data);
+              if (parsed.content) {
+                accumulatedContent += parsed.content;
+
+                // Update the AI message with accumulated content
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === aiMessageId
+                      ? { ...msg, content: accumulatedContent }
+                      : msg
+                  )
+                );
+              }
+            } catch (e) {
+              // Skip invalid JSON
+              console.warn('Failed to parse streaming data:', data);
+            }
+          }
+        }
+      }
+    } catch (error: any) {
+      console.error('Error streaming AI response:', error);
+
+      if (error.name === 'AbortError') {
+        console.log('Request was aborted');
+        return;
+      }
+
+      // Show error message
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === aiMessageId
+            ? {
+                ...msg,
+                content: 'Sorry, I encountered an error. Please try again.',
+              }
+            : msg
+        )
+      );
+    } finally {
+      setIsLoading(false);
+      abortControllerRef.current = null;
     }
-    setInput('');
-    setIsLoading(false);
+  };
+
+  // Stop streaming function
+  const stopStreaming = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className='h-full flex flex-col'>
-      {/* HEADER */}
-      {/* <div className='px-6 pb-4'>
-        <h2 className='text-xl font-semibold text-gray-700 mb-2'>
-          AI Interviewer
-        </h2>
-        <p className='text-gray-700 text-sm'>
-          Ask about your architecture design
-        </p>
-      </div> */}
-
       {/* CHAT FORM */}
       <form
         onSubmit={handleSendMessage}
@@ -102,70 +210,59 @@ const Chat: React.FC = () => {
               </p>
             </div>
           ) : (
-            messages.map((m, idx) => (
-              <div
-                key={m.id}
-                className={`flex items-start gap-3 ${
-                  m.role === 'user' ? 'flex-row-reverse' : 'flex-row'
-                }`}
-              >
-                {/* AVATAR FOR USERS AND CHATBOTS*/}
+            <>
+              {messages.map((m, idx) => (
                 <div
-                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                    m.role === 'user'
-                      ? 'bg-indigo-500/40 border border-indigo-400/50'
-                      : 'bg-white/10 border border-white/20'
+                  key={m.id}
+                  className={`flex items-start gap-3 ${
+                    m.role === 'user' ? 'flex-row-reverse' : 'flex-row'
                   }`}
                 >
-                  {m.role === 'user' ? (
-                    <User className='w-4 h-4 text-indigo-300' />
-                  ) : (
-                    <Bot className='w-4 h-4 text-white/70' />
-                  )}
-                </div>
-
-                {/* MESSAGE BUBBLE */}
-                <div
-                  className={`max-w-[80%] ${
-                    m.role === 'user' ? 'text-right' : 'text-left'
-                  }`}
-                >
+                  {/* AVATAR FOR USERS AND CHATBOTS*/}
                   <div
-                    className={`inline-block px-4 py-2.5 rounded-xl backdrop-blur-sm border ${
+                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                       m.role === 'user'
-                        ? 'bg-indigo-500/40 border-indigo-400/50 text-white'
-                        : 'bg-white/10 border-white/20 text-white/90'
+                        ? 'bg-indigo-500/40 border border-indigo-400/50'
+                        : 'bg-white/10 border border-white/20'
                     }`}
                   >
-                    <p className='text-sm leading-relaxed break-words'>
-                      {m.content}
-                    </p>
+                    {m.role === 'user' ? (
+                      <User className='w-4 h-4 text-indigo-300' />
+                    ) : (
+                      <Bot className='w-4 h-4 text-white/70' />
+                    )}
+                  </div>
+
+                  {/* MESSAGE BUBBLE */}
+                  <div
+                    className={`max-w-[80%] ${
+                      m.role === 'user' ? 'text-right' : 'text-left'
+                    }`}
+                  >
+                    <div
+                      className={`inline-block px-4 py-2.5 rounded-xl backdrop-blur-sm border ${
+                        m.role === 'user'
+                          ? 'bg-indigo-500/40 border-indigo-400/50 text-white'
+                          : 'bg-white/10 border-white/20 text-white/90'
+                      }`}
+                    >
+                      <p className='text-sm leading-relaxed break-words whitespace-pre-wrap'>
+                        {m.content}
+                        {/* Show cursor for streaming AI messages */}
+                        {m.role === 'assistant' &&
+                          isLoading &&
+                          idx === messages.length - 1 && (
+                            <span className='inline-block w-2 h-4 bg-white/70 ml-1 animate-pulse'></span>
+                          )}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))}
 
-          {/* LOADING INDICATOR */}
-          {isLoading && (
-            <div className='flex items-start gap-3'>
-              <div className='flex-shrink-0 w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center'>
-                <Bot className='w-4 h-4 text-white/70' />
-              </div>
-              <div className='bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 backdrop-blur-sm'>
-                <div className='flex items-center space-x-1'>
-                  <div className='w-2 h-2 bg-white/50 rounded-full animate-bounce'></div>
-                  <div
-                    className='w-2 h-2 bg-white/50 rounded-full animate-bounce'
-                    style={{ animationDelay: '0.1s' }}
-                  ></div>
-                  <div
-                    className='w-2 h-2 bg-white/50 rounded-full animate-bounce'
-                    style={{ animationDelay: '0.2s' }}
-                  ></div>
-                </div>
-              </div>
-            </div>
+              {/* Invisible div to scroll to */}
+              <div ref={messagesEndRef} />
+            </>
           )}
         </div>
 
@@ -179,13 +276,25 @@ const Chat: React.FC = () => {
               placeholder='Ask away...'
               disabled={isLoading}
             />
-            <button
-              type='submit'
-              className='bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-400/30 hover:border-indigo-400/50 text-white p-2.5 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm group'
-              disabled={isLoading || !input.trim()}
-            >
-              <Send className='w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-200' />
-            </button>
+            {isLoading ? (
+              <button
+                type='button'
+                onClick={stopStreaming}
+                className='bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 hover:border-red-400/50 text-white p-2.5 rounded-xl transition-all duration-200 backdrop-blur-sm'
+              >
+                <span className='w-5 h-5 flex items-center justify-center'>
+                  ⏹
+                </span>
+              </button>
+            ) : (
+              <button
+                type='submit'
+                className='bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-400/30 hover:border-indigo-400/50 text-white p-2.5 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm group'
+                disabled={!input.trim()}
+              >
+                <Send className='w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-200' />
+              </button>
+            )}
           </div>
         </div>
       </form>
@@ -194,7 +303,3 @@ const Chat: React.FC = () => {
 };
 
 export default Chat;
-
-interface AIResponse {
-  reply: string;
-}
