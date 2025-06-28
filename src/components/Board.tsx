@@ -41,7 +41,7 @@ const Board: React.FC = () => {
         {
           ...params,
           animated: true,
-          style: { strokeWidth: 1.5, stroke: '#888' },
+          style: { strokeWidth: 2, stroke: '#ffffff' },
         },
         eds
       )

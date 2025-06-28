@@ -8,6 +8,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",
+    "concurrently": "^9.2.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.10",
     "vite": "^6.3.5"
@@ -15,7 +16,10 @@
   "scripts": {
     "dev": "npm install && vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "concurrently \"npm install\" \"cd server && npm install\" && concurrently --names \"SERVER,CLIENT\" --prefix-colors \"yellow,cyan\" \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm start",
+    "client": "vite"
   },
   "dependencies": {
     "@xyflow/react": "^12.7.1",
