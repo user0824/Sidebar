@@ -30,3 +30,61 @@
     border-color: var(--color-gray-200, currentcolor);
   }
 }
+
+/* Style the Controls container */
+.react-flow__controls {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px) !important;
+  padding: 4px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Style the individual control buttons */
+.react-flow__controls-button {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.2s ease !important;
+  backdrop-filter: blur(8px) !important;
+  margin: 2px !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.react-flow__controls-button:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: rgb(99, 102, 241) !important;
+  transform: scale(1.05) !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+.react-flow__controls-button svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Style the MiniMap container */
+.react-flow__minimap {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Style the MiniMap mask */
+.react-flow__minimap-mask {
+  fill: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Style the MiniMap node colors */
+.react-flow__minimap-node {
+  fill: rgba(255, 255, 255, 0.8) !important;
+  stroke: rgba(255, 255, 255, 0.4) !important;
+  stroke-width: 1px !important;
+}
