@@ -1,7 +1,11 @@
 import React, { createContext, useContext, useState } from 'react';
 
 // establish type for messages to differentiate between user and assistant
-type Message = { id: string; role: 'user' | 'assistant'; content: string };
+export type Message = {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+};
 
 // typing for chatContext
 type ChatContextType = {

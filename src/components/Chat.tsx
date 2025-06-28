@@ -1,26 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { Send, Bot, User } from 'lucide-react';
+import { useChatContext, Message } from '../context/ChatContext';
 
-// >> CHAT << //
 const Chat: React.FC = () => {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { messages, setMessages, input, setInput, isLoading, setIsLoading } =
+    useChatContext();
 
   // send message handler
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    // make sure we have something in the input box before sending
     if (!input.trim()) return;
-    const newUserMessage: ChatMessage = { role: 'user', content: input };
-    // Append the user's message immediately
+    const newUserMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: input,
+    };
     setMessages((prev) => [...prev, newUserMessage]);
     setIsLoading(true);
-    // Ai chat logic here!
     try {
-      // Updated endpoint URL to point to the backend running on port 3001
-      // going to try sending messages state for context
       const { data } = await axios.post<AIResponse>(
         'http://localhost:3001/api',
         {
@@ -28,8 +26,11 @@ const Chat: React.FC = () => {
           message: input,
         }
       );
-      const newAIMessage: ChatMessage = { role: 'ai', content: data.reply };
-      // Append the AI's reply
+      const newAIMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: data.reply,
+      };
       setMessages((prev) => [...prev, newAIMessage]);
     } catch (error) {
       console.error('Error fetching AI response', error);
@@ -73,7 +74,7 @@ const Chat: React.FC = () => {
           ) : (
             messages.map((m, idx) => (
               <div
-                key={idx}
+                key={m.id}
                 className={`flex items-start gap-3 ${
                   m.role === 'user' ? 'flex-row-reverse' : 'flex-row'
                 }`}
@@ -163,11 +164,6 @@ const Chat: React.FC = () => {
 };
 
 export default Chat;
-
-interface ChatMessage {
-  role: 'user' | 'ai';
-  content: string;
-}
 
 interface AIResponse {
   reply: string;
