@@ -26,7 +26,7 @@ import {
 const Board: React.FC = () => {
   const { nodes, setNodes, edges, setEdges } = useBoard();
   const [activeTab, setActiveTab] = useState<'SystemBoard' | 'ScratchPad'>(
-    'SystemBoard'
+    'ScratchPad'
   );
 
   const onNodesChange = (changes: NodeChange[]) =>
