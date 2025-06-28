@@ -8,7 +8,7 @@ export const chatHandler: RequestHandler = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { message, messages } = req.body;
+  const { message, messages, boardSummary, scratchPad } = req.body;
   if (!message) {
     res.status(400).json({ error: 'Missing message in request body' });
     return;
@@ -17,20 +17,28 @@ export const chatHandler: RequestHandler = async (
   try {
     // Build the messages array to send to OpenAI with system prompt and context
     const promptMessages = [{ role: 'system', content: SYSTEM_PROMPT }];
+    if (boardSummary || scratchPad) {
+      const contextPieces: string[] = [];
+      if (boardSummary) contextPieces.push(`Board Context: ${boardSummary}`);
+      if (scratchPad) contextPieces.push(`Notes: ${scratchPad}`);
+      promptMessages.push({ role: 'user', content: contextPieces.join(' \n ') });
+    }
+
     if (Array.isArray(messages) && messages.length > 0) {
-      // Append all context messages (assuming each has a "role" and "content")
+      // Append all prior chat context
       promptMessages.push(...messages);
     } else {
       // Fallback to sending just the current message
       promptMessages.push({ role: 'user', content: message });
     }
     // Updated API call to use the full context
+    console.log('Prompt messages:', promptMessages);
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4.1',
         messages: promptMessages,
-        temperature: 0.7,
+        temperature: 0.3,
       },
       {
         headers: {
