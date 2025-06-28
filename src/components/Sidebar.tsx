@@ -14,15 +14,15 @@ const Sidebar: React.FC = () => {
 
   return (
     <div className='h-full flex flex-col'>
-      {/* TAB NAVIGATION */}
+      {/* TAB NAVIGATION - Updated with glassmorphism toggle design */}
       <div className='p-6'>
-        <div className='flex bg-gray-100/60 rounded-xl p-1'>
+        <div className='flex bg-white/10 border border-white/20 rounded-xl p-1 backdrop-blur-sm text-md font-medium'>
           <button
             onClick={() => setActiveTab('ComponentList')}
-            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+            className={`flex-1 py-2.5 px-4 rounded-lg  transition-all duration-200 ${
               activeTab === 'ComponentList'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-800 hover:bg-indigo-100/40'
+                ? 'bg-white/20 text-indigo-600 shadow-sm backdrop-blur-sm font-semibold'
+                : 'text-white/70 hover:text-white hover:bg-white/10'
             }`}
           >
             {/* COMPONENTS */}
@@ -34,10 +34,10 @@ const Sidebar: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('Chat')}
-            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+            className={`flex-1 py-2.5 px-4 rounded-lg transition-all duration-200 ${
               activeTab === 'Chat'
-                ? 'bg-white text-indigo-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-800 hover:bg-indigo-100/40'
+                ? 'bg-white/20 text-indigo-600 shadow-sm backdrop-blur-sm font-semibold'
+                : 'text-white/70 hover:text-white hover:bg-white/10'
             }`}
           >
             {/* AI CHATBOT */}

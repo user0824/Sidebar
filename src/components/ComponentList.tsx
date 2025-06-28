@@ -208,7 +208,7 @@ const ComponentList: React.FC = () => {
       ) : (
         <button
           onClick={handleShowInput}
-          className='flex items-center gap-1 text-violet-800 hover:text-blue-700 justify-center w-full px-6 pt-1'
+          className='flex items-center gap-1 text-white/90 hover:text-indigo-700 justify-center w-full px-6 pt-1'
         >
           <span className='text-xl'>+</span> Add Custom Component
         </button>
