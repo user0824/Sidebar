@@ -17,28 +17,26 @@ import {
   Connection,
   Handle,
   Position,
+  ConnectionMode,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-// Custom node that keeps the emoji + color from the component library
+// Custom node with visible left/right handles that work as both sources and targets.
+const knobStyle = {
+  width: 10,
+  height: 10,
+  borderRadius: '50%',
+  border: '1px solid #6B7280', // gray-500
+  background: '#FFFFFF',
+};
+
 const CustomNode: React.FC<NodeProps> = ({ data }) => {
   return (
     <div
       className={`${data.color} border border-gray-400 rounded-lg px-3 py-2 shadow-md flex items-center space-x-1`}
     >
-      {/* Input handle on the left */}
-      <Handle
-        type='target'
-        position={Position.Left}
-        style={{ background: '#555' }}
-      />
       <span className='text-sm'>{data.icon}</span>
       <span className='text-xs font-medium text-gray-700'>{data.name}</span>
-      <Handle
-        type='source'
-        position={Position.Right}
-        style={{ background: '#555' }}
-      />
     </div>
   );
 };
@@ -118,6 +116,19 @@ const ReactFlowBoard: React.FC<ReactFlowBoardProps> = ({
           onDragOver={onDragOver}
           nodeTypes={nodeTypes}
           connectionLineType={ConnectionLineType.SmoothStep}
+          connectionMode={ConnectionMode.Loose}
+          defaultEdgeOptions={{
+            style: {
+              strokeDasharray: '4 2',
+              stroke: '#ffffff',
+              strokeWidth: 2,
+            },
+          }}
+          connectionLineStyle={{
+            strokeDasharray: '4 2',
+            stroke: '#ffffff',
+            strokeWidth: 2,
+          }}
         >
           <MiniMap />
           <Controls />

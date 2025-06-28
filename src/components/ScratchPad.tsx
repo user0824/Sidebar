@@ -1,5 +1,5 @@
 // ------------------------------------------------------------------------------------------------
-// >> SCRATCH PAD << //
+// >> NOTES << //
 // ------------------------------------------------------------------------------------------------
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill-new';
@@ -18,6 +18,18 @@ const ScratchPad: React.FC = () => {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, value);
   }, [value]);
+
+  // ------------------------------------------------------------------------------------------------
+  // * LISTEN FOR DELETE NOTES EVENT FROM PARENT * //
+  // ------------------------------------------------------------------------------------------------
+  useEffect(() => {
+    const handleClear = () => {
+      setValue('');
+    };
+
+    window.addEventListener('clearScratchPad', handleClear);
+    return () => window.removeEventListener('clearScratchPad', handleClear);
+  }, []);
 
   // ------------------------------------------------------------------------------------------------
   // * TOOLBAR CONFIGURATION * //
@@ -39,16 +51,9 @@ const ScratchPad: React.FC = () => {
   // * RENDER * //
   // ------------------------------------------------------------------------------------------------
   return (
-    <div className='h-full bg-yellow-50 border border-gray-200 rounded-lg flex flex-col'>
-      <div className='p-4 border-b border-gray-200 shrink-0'>
-        <h3 className='text-lg font-bold text-yellow-500'>Scratch Pad</h3>
-        <p className='text-sm text-gray-600 mt-1'>
-          Write and format your notes
-        </p>
-      </div>
-
+    <div className='h-full bg-purple-300/10 flex flex-col'>
       <div
-        className='flex-1 p-4 scratchpad-content'
+        className='flex-1 px-0 scratchpad-content'
         style={{ overflow: 'hidden' }}
       >
         <ReactQuill
@@ -64,16 +69,6 @@ const ScratchPad: React.FC = () => {
           }}
         />
       </div>
-      {/* CLEAR BUTTON */}
-      <button
-        onClick={() => {
-          setValue('');
-          localStorage.removeItem(STORAGE_KEY);
-        }}
-        className='ml-4 px-3 py-1 text-sm bg-red-100 text-red-600 border border-red-300 rounded hover:bg-red-200 transition'
-      >
-        Clear
-      </button>
     </div>
   );
 };
