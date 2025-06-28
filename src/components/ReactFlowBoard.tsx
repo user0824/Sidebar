@@ -171,8 +171,18 @@ const ReactFlowBoard: React.FC<ReactFlowBoardProps> = ({
             strokeWidth: 2,
           }}
         >
-          <MiniMap />
-          <Controls />
+          <MiniMap
+            maskColor='rgb(255, 255, 255, 0.1)'
+            nodeColor='rgb(255, 255, 255, 0.8)'
+            nodeStrokeColor='rgb(255, 255, 255, 0.4)'
+            nodeBorderRadius={8}
+            zoomable
+            pannable
+          />
+
+          {/* Styled Controls */}
+          <Controls showZoom={true} showFitView={true} showInteractive={true} />
+
           <Background gap={12} size={1} />
         </ReactFlow>
       </div>

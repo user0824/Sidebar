@@ -207,17 +207,17 @@ const Board: React.FC = () => {
 
               {/* STATS OVERLAY */}
               {nodes.length > 0 && (
-                <div className='absolute top-2 left-2 bg-white/90 backdrop-blur-sm rounded-xl py-1 px-2.5 shadow-lg border border-gray-200/50 z-10'>
+                <div className='absolute top-6 left-6 bg-white/10 backdrop-blur-sm rounded-xl py-2 px-3 shadow-lg border border-white/20 z-10 transition-all duration-200 hover:bg-white/15'>
                   <div className='flex items-center space-x-4 text-sm'>
                     <div className='flex items-center space-x-2'>
-                      <Circle className='w-2 h-2 text-blue-500 fill-current' />
-                      <span className='text-gray-600'>
+                      <Circle className='w-2.5 h-2.5 text-indigo-400 fill-current animate-pulse' />
+                      <span className='text-white/90 font-medium'>
                         {nodes.length} Components
                       </span>
                     </div>
                     <div className='flex items-center space-x-2'>
-                      <Circle className='w-2 h-2 text-green-500 fill-current ' />
-                      <span className='text-gray-600'>
+                      <Circle className='w-2.5 h-2.5 text-green-400 fill-current animate-pulse' />
+                      <span className='text-white/90 font-medium'>
                         {edges.length} Connections
                       </span>
                     </div>
