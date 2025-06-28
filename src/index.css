@@ -33,58 +33,94 @@
 
 /* Style the Controls container */
 .react-flow__controls {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  border-radius: 12px !important;
-  backdrop-filter: blur(8px) !important;
-  padding: 4px !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  background: #ffffff1a;
+  border: 1px solid #ffffff33;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  padding: 4px;
+  box-shadow: 0 4px 6px -1px #0000001a, 0 2px 4px -1px #0000000f;
 }
 
 /* Style the individual control buttons */
 .react-flow__controls-button {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  border-radius: 8px !important;
-  color: rgba(255, 255, 255, 0.9) !important;
-  transition: all 0.2s ease !important;
-  backdrop-filter: blur(8px) !important;
-  margin: 2px !important;
-  width: 32px !important;
-  height: 32px !important;
+  background: #ffffff1a;
+  border: 1px solid #ffffff33;
+  border-radius: 8px;
+  color: #ffffffe6;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  margin: 2px;
+  width: 32px;
+  height: 32px;
 }
 
 .react-flow__controls-button:hover {
-  background: rgba(255, 255, 255, 0.2) !important;
-  color: rgb(99, 102, 241) !important;
-  transform: scale(1.05) !important;
-  border-color: rgba(99, 102, 241, 0.3) !important;
+  background: #ffffff33;
+  color: #6366f1;
+  transform: scale(1.05);
+  border-color: #6366f14d;
 }
 
 .react-flow__controls-button svg {
-  width: 16px !important;
-  height: 16px !important;
+  width: 16px;
+  height: 16px;
 }
 
 /* Style the MiniMap container */
 .react-flow__minimap {
-  background: rgba(255, 255, 255, 0.1) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  border-radius: 12px !important;
-  backdrop-filter: blur(8px) !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  background: #ffffff1a;
+  border: 1px solid #ffffff33;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 6px -1px #0000001a, 0 2px 4px -1px #0000000f;
 }
 
 /* Style the MiniMap mask */
 .react-flow__minimap-mask {
-  fill: rgba(255, 255, 255, 0.1) !important;
+  fill: #ffffff1a;
 }
 
 /* Style the MiniMap node colors */
 .react-flow__minimap-node {
-  fill: rgba(255, 255, 255, 0.8) !important;
-  stroke: rgba(255, 255, 255, 0.4) !important;
-  stroke-width: 1px !important;
+  fill: #ffffffcc;
+  stroke: #ffffff66;
+  stroke-width: 1px;
+}
+
+.scratchpad-content .ql-editor {
+  margin: 10px;
+  font-size: 18px; /* Default is usually 13px */
+  line-height: 1.6;
+  color: #0f172acc;
+}
+
+.scratchpad-content .ql-editor p {
+  font-size: 18px;
+}
+
+.scratchpad-content .ql-editor h1 {
+  font-size: 26px;
+}
+
+.scratchpad-content .ql-editor h2 {
+  font-size: 22px;
+}
+
+.scratchpad-content .ql-editor h3 {
+  font-size: 20px;
+}
+
+/* Scale ReactQuill% */
+.scratchpad-content .ql-toolbar {
+  transform: scale(1.05);
+  transform-origin: top left;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 10;
+}
+
+/* Fix dropdown positioning after scaling */
+.scratchpad-content .ql-picker-options {
+  z-index: 20;
+  position: absolute;
 }
