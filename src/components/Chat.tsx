@@ -2,10 +2,36 @@ import React from 'react';
 import axios from 'axios';
 import { Send, Bot, User } from 'lucide-react';
 import { useChatContext, Message } from '../context/ChatContext';
+import { useBoard } from '../context/BoardContext';
+import { Node as FlowNode, Edge as FlowEdge } from '@xyflow/react';
 
 const Chat: React.FC = () => {
   const { messages, setMessages, input, setInput, isLoading, setIsLoading } =
     useChatContext();
+
+  // helper to strip html tags from the scratchpad html (very lightweight)
+  const stripHtml = (html: string) => {
+    if (!html) return '';
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
+  // create a plain-english summary of the board that is compact enough for LLM consumption
+  const summariseBoard = (nodes: FlowNode[], edges: FlowEdge[]) => {
+    if (!nodes.length) return 'The board is empty.';
+    const nodeNames = nodes.map((n) => n?.data?.name).filter(Boolean);
+    const componentsPart = `Components: ${nodeNames.join(', ')}.`;
+    if (!edges.length) return `${componentsPart} No connections.`;
+    const edgeStrings = edges.map((e) => {
+      const sourceName = nodes.find((n) => n.id === e.source)?.data?.name || e.source;
+      const targetName = nodes.find((n) => n.id === e.target)?.data?.name || e.target;
+      return `${sourceName}→${targetName}`;
+    });
+    return `${componentsPart} Connections: ${edgeStrings.join(', ')}.`;
+  };
+
+  const { nodes, edges } = useBoard();
 
   // send message handler
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -16,16 +42,20 @@ const Chat: React.FC = () => {
       role: 'user',
       content: input,
     };
-    setMessages((prev) => [...prev, newUserMessage]);
+    const updatedMessages = [...messages, newUserMessage];
+    setMessages(updatedMessages);
     setIsLoading(true);
     try {
-      const { data } = await axios.post<AIResponse>(
-        'http://localhost:3001/api',
-        {
-          messages,
-          message: input,
-        }
-      );
+      const boardSummary = summariseBoard(nodes, edges);
+      const scratchPadHtml = localStorage.getItem('scratchpad-content') || '';
+      const scratchPad = stripHtml(scratchPadHtml).slice(0, 1000); // hard cap to 1k chars
+
+      const { data } = await axios.post<AIResponse>('http://localhost:3001/api', {
+        messages: updatedMessages,
+        message: input,
+        boardSummary,
+        scratchPad,
+      });
       const newAIMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
