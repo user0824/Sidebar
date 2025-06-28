@@ -31,6 +31,13 @@ const knobStyle = {
   background: '#FFFFFF',
 };
 
+// Fallback emoji for components without SVGs
+const fallbackEmojis: Record<string, string> = {
+  cache: '🗄️',
+  database: '🗄️',
+  'web-server': '🖥️',
+};
+
 const CustomNode: React.FC<NodeProps> = ({ data }) => {
   return (
     <div className='relative group'>
@@ -63,7 +70,18 @@ const CustomNode: React.FC<NodeProps> = ({ data }) => {
               )}
             </span>
           ) : (
-            data.icon
+            <span
+              style={{
+                display: 'inline-block',
+                width: 24,
+                height: 24,
+                fontSize: 20,
+                textAlign: 'center',
+                lineHeight: '24px',
+              }}
+            >
+              {fallbackEmojis[data.icon] || data.icon}
+            </span>
           )}
         </span>
         <span className='text-xs font-medium text-gray-700'>{data.name}</span>
