@@ -1,24 +1,42 @@
 import React from 'react';
-import { useChatContext } from '../context/ChatContext';
+import axios from 'axios';
 import { Send, Bot, User } from 'lucide-react';
+import { useChatContext, Message } from '../context/ChatContext';
 
-// >> CHAT << //
 const Chat: React.FC = () => {
-  // import state from chat context
   const { messages, setMessages, input, setInput, isLoading, setIsLoading } =
     useChatContext();
 
   // send message handler
-  const handleSend = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    // make sure we have something in the input box before sending
     if (!input.trim()) return;
-    // create a message object to store to state with properties: id, role, and content
-    setMessages([
-      ...messages,
-      { id: Date.now().toString(), role: 'user', content: input },
-    ]);
+    const newUserMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: input,
+    };
+    setMessages((prev) => [...prev, newUserMessage]);
+    setIsLoading(true);
+    try {
+      const { data } = await axios.post<AIResponse>(
+        'http://localhost:3001/api',
+        {
+          messages,
+          message: input,
+        }
+      );
+      const newAIMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: data.reply,
+      };
+      setMessages((prev) => [...prev, newAIMessage]);
+    } catch (error) {
+      console.error('Error fetching AI response', error);
+    }
     setInput('');
+    setIsLoading(false);
   };
 
   return (
@@ -35,7 +53,7 @@ const Chat: React.FC = () => {
 
       {/* CHAT FORM */}
       <form
-        onSubmit={handleSend}
+        onSubmit={handleSendMessage}
         className='flex flex-col flex-1 bg-white/10 border border-white/20 rounded-sm backdrop-blur-xl overflow-hidden'
       >
         {/* MESSAGES AREA */}
@@ -54,7 +72,7 @@ const Chat: React.FC = () => {
               </p>
             </div>
           ) : (
-            messages.map((m) => (
+            messages.map((m, idx) => (
               <div
                 key={m.id}
                 className={`flex items-start gap-3 ${
@@ -146,3 +164,7 @@ const Chat: React.FC = () => {
 };
 
 export default Chat;
+
+interface AIResponse {
+  reply: string;
+}
