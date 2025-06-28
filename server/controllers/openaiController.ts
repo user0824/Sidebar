@@ -1,7 +1,7 @@
 import express from 'express';
 import type { Request, Response, NextFunction, RequestHandler } from 'express';
 import axios from 'axios';
-import { SYSTEM_PROMPT } from '../prompts.ts';
+import { SYSTEM_PROMPT } from '../prompts';
 
 // Regular chat handler (keeping this existing one)
 export const chatHandler: RequestHandler = async (
@@ -18,6 +18,16 @@ export const chatHandler: RequestHandler = async (
   try {
     // Build the messages array to send to OpenAI with system prompt and context
     const promptMessages = [{ role: 'system', content: SYSTEM_PROMPT }];
+
+    // 1. Add prior chat context or fallback to the single incoming message
+    if (Array.isArray(messages) && messages.length > 0) {
+      promptMessages.push(...messages);
+    } else {
+      promptMessages.push({ role: 'user', content: message });
+    }
+
+    // 2. Append board context & notes *last* so that the LLM always sees the
+    //    freshest architecture description right before generating a reply.
     if (boardSummary || scratchPad) {
       const contextPieces: string[] = [];
       if (boardSummary) contextPieces.push(`Board Context: ${boardSummary}`);
@@ -28,13 +38,6 @@ export const chatHandler: RequestHandler = async (
       });
     }
 
-    if (Array.isArray(messages) && messages.length > 0) {
-      // Append all prior chat context
-      promptMessages.push(...messages);
-    } else {
-      // Fallback to sending just the current message
-      promptMessages.push({ role: 'user', content: message });
-    }
     // Updated API call to use the full context
     console.log('Prompt messages:', promptMessages);
     const response = await axios.post(
@@ -85,6 +88,14 @@ export const streamChatHandler: RequestHandler = async (
     // Build the messages array to send to OpenAI with system prompt and context
     const promptMessages = [{ role: 'system', content: SYSTEM_PROMPT }];
 
+    // 1. Prior chat context (or current message if none)
+    if (Array.isArray(messages) && messages.length > 0) {
+      promptMessages.push(...messages);
+    } else {
+      promptMessages.push({ role: 'user', content: message });
+    }
+
+    // 2. Board context & notes as the very last user message
     if (boardSummary || scratchPad) {
       const contextPieces: string[] = [];
       if (boardSummary) contextPieces.push(`Board Context: ${boardSummary}`);
@@ -93,14 +104,6 @@ export const streamChatHandler: RequestHandler = async (
         role: 'user',
         content: contextPieces.join(' \n '),
       });
-    }
-
-    if (Array.isArray(messages) && messages.length > 0) {
-      // Append all prior chat context
-      promptMessages.push(...messages);
-    } else {
-      // Fallback to sending just the current message
-      promptMessages.push({ role: 'user', content: message });
     }
 
     console.log('Streaming prompt messages:', promptMessages);

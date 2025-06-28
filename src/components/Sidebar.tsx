@@ -9,7 +9,7 @@ import Chat from './Chat';
 
 const Sidebar: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'ComponentList' | 'Chat'>(
-    'ComponentList'
+    'Chat'
   );
 
   return (

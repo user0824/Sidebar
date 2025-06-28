@@ -52,6 +52,17 @@ const Chat: React.FC = () => {
 
   const { nodes, edges } = useBoard();
 
+  // Refs that always hold the **latest** board state so the submit handler
+  // can read fresh data even if it was created in a previous render.
+  const nodesRef = useRef(nodes);
+  const edgesRef = useRef(edges);
+
+  // Keep the refs in sync with the context values
+  useEffect(() => {
+    nodesRef.current = nodes;
+    edgesRef.current = edges;
+  }, [nodes, edges]);
+
   // Streaming message handler
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,7 +97,10 @@ const Chat: React.FC = () => {
       // Create abort controller for this request
       abortControllerRef.current = new AbortController();
 
-      const boardSummary = summariseBoard(nodes, edges);
+      // Use the *latest* board state held in the refs, this avoids the stale
+      // closure issue where `nodes`/`edges` could still be the previous value
+      // if the user clicks "Send" before React has re-rendered the sidebar.
+      const boardSummary = summariseBoard(nodesRef.current, edgesRef.current);
       const scratchPadHtml = localStorage.getItem('scratchpad-content') || '';
       const scratchPad = stripHtml(scratchPadHtml).slice(0, 1000);
 
