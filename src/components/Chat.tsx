@@ -192,7 +192,7 @@ const Chat: React.FC = () => {
       {/* CHAT FORM */}
       <form
         onSubmit={handleSendMessage}
-        className='flex flex-col flex-1 bg-white/10 border border-white/20 rounded-sm backdrop-blur-xl overflow-hidden'
+        className='flex flex-col flex-1  overflow-hidden'
       >
         {/* MESSAGES AREA */}
         <div className='flex-1 p-4 overflow-y-auto space-y-3 min-h-0'>
@@ -272,7 +272,7 @@ const Chat: React.FC = () => {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              className='flex-1 bg-slate-400/10 hover:text-white hover:bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-slate-600/70 placeholder-white/80 focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400/30 transition-all duration-200 backdrop-blur-sm'
+              className='flex-1  hover:text-white hover:bg-white/10 border-2 border-white/20 rounded-xl px-4 py-2.5 focus:text-slate-900/80 placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400/30 transition-all duration-200'
               placeholder='Ask away...'
               disabled={isLoading}
             />
