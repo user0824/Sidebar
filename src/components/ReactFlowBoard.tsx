@@ -140,8 +140,18 @@ const ReactFlowBoard: React.FC<ReactFlowBoardProps> = ({
           nodeTypes={nodeTypes}
           connectionLineType={ConnectionLineType.SmoothStep}
           connectionMode={ConnectionMode.Loose}
-          defaultEdgeOptions={{ style: { strokeDasharray: '4 2' } }}
-          connectionLineStyle={{ strokeDasharray: '4 2' }}
+          defaultEdgeOptions={{
+            style: {
+              strokeDasharray: '4 2',
+              stroke: '#ffffff',
+              strokeWidth: 2,
+            },
+          }}
+          connectionLineStyle={{
+            strokeDasharray: '4 2',
+            stroke: '#ffffff',
+            strokeWidth: 2,
+          }}
         >
           <MiniMap />
           <Controls />
