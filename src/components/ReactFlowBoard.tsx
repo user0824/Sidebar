@@ -20,6 +20,7 @@ import {
   ConnectionMode,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { SystemIcons } from '../assets';
 
 // Custom node with visible left/right handles that work as both sources and targets.
 const knobStyle = {
@@ -47,7 +48,24 @@ const CustomNode: React.FC<NodeProps> = ({ data }) => {
       <div
         className={`${data.color} border border-gray-400 rounded-lg px-3 py-2 shadow-md flex items-center space-x-1`}
       >
-        <span className='text-sm'>{data.icon}</span>
+        <span
+          className='flex items-center justify-center overflow-hidden'
+          style={{ width: 28, height: 28 }}
+        >
+          {SystemIcons[data.icon as keyof typeof SystemIcons] ? (
+            <span style={{ display: 'inline-block', width: 24, height: 24 }}>
+              {/* SVG will scale to fit this container */}
+              {React.cloneElement(
+                SystemIcons[data.icon as keyof typeof SystemIcons](),
+                {
+                  style: { width: '100%', height: '100%', display: 'block' },
+                }
+              )}
+            </span>
+          ) : (
+            data.icon
+          )}
+        </span>
         <span className='text-xs font-medium text-gray-700'>{data.name}</span>
       </div>
 
