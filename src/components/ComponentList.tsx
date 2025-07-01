@@ -82,6 +82,8 @@ const ComponentList: React.FC = () => {
   const [showInput, setShowInput] = useState(false);
   const [newName, setNewName] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+  // Search term for filtering
+  const [searchTerm, setSearchTerm] = useState('');
 
   // handler to toggle input visibility for when user wants to add a custom component
   const handleShowInput = () => {
@@ -105,6 +107,15 @@ const ComponentList: React.FC = () => {
     setNewName('');
     setShowInput(false);
   };
+
+  // ------------------------------------------------------------
+  // >> FILTERED COMPONENTS << //  Matches name or category
+  // ------------------------------------------------------------
+  const filteredComponents = components.filter((comp) =>
+    `${comp.name} ${comp.category}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className='h-full flex flex-col'>
@@ -144,12 +155,28 @@ const ComponentList: React.FC = () => {
         </button>
       )}
 
-      {/* COMPONENT GRID */}
+      {/* SEARCH + COMPONENT GRID */}
       <div className='flex-1 px-6 pt-4 overflow-y-auto'>
+        {/* SEARCH BAR */}
+        <div className='mb-4'>
+          <input
+            type='text'
+            placeholder='Search components...'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className='w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm'
+          />
+        </div>
+
+        {/* COMPONENTS */}
         <div className='space-y-3'>
-          {components.map((component) => (
-            <DraggableComponent key={component.id} component={component} />
-          ))}
+          {filteredComponents.length ? (
+            filteredComponents.map((component) => (
+              <DraggableComponent key={component.id} component={component} />
+            ))
+          ) : (
+            <p className='text-sm text-gray-500'>No components found.</p>
+          )}
         </div>
       </div>
     </div>
