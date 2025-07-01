@@ -114,7 +114,9 @@ const ComponentList: React.FC = () => {
           <input
             ref={inputRef}
             value={newName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setNewName(e.target.value)
+            }
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
               if (e.key === 'Enter') {
                 addNewComponent();
