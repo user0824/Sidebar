@@ -50,10 +50,13 @@ export const TimerProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       intervalRef.current = setInterval(() => {
         setCountdown((prev: number) => {
           if (prev <= 1) {
-            // Countdown finished – start the session
-            setPhase('running');
+            // Countdown finished – alert the user and stop the timer
+            clear();
+            // Ensure the countdown stays at 0
+            setTimeout(() => window.alert('Time\'s up!'), 0);
             return 0;
           }
+          // Continue counting down
           return prev - 1;
         });
       }, 1000);

@@ -1,5 +1,3 @@
-import React from 'react';
-
 // System Component SVG Icons
 export const SystemIcons = {
   'message-queue': () => (
