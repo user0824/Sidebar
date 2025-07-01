@@ -558,16 +558,6 @@ export const systemComponents = [
     category: 'Compute',
   },
   {
-    id: 'microservice',
-    name: 'Microservice',
-    icon: 'microservice',
-    color: 'bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200',
-    hoverColor:
-      'hover:from-slate-100 hover:to-slate-200 hover:border-slate-300',
-    description: 'Service component',
-    category: 'Compute',
-  },
-  {
     id: 'distributed-lock-manager',
     name: 'Distributed Lock Manager',
     icon: 'distributed-lock-manager',
