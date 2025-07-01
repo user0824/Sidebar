@@ -21,9 +21,7 @@ const fallbackEmojis: Record<string, string> = {
   'web-server': '🖥️',
 };
 
-const DraggableComponent: React.FC<DraggableComponentProps> = ({
-  component,
-}) => {
+const DraggableComponent: React.FC<DraggableComponentProps> = React.memo(({ component }) => {
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
     event.dataTransfer.setData(
       'application/reactflow',
@@ -74,9 +72,9 @@ const DraggableComponent: React.FC<DraggableComponentProps> = ({
       </div>
     </div>
   );
-};
+});
 
-const ComponentList: React.FC = () => {
+const ComponentList: React.FC = React.memo(() => {
   const uniqueComponents = Array.from(
     new Map(systemComponents.map((comp) => [comp.name, comp])).values()
   ) as typeof systemComponents;
@@ -185,6 +183,6 @@ const ComponentList: React.FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default ComponentList;
