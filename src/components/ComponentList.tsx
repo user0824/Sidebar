@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
 // >> COMPONENT LIST << //
 // ----------------------------------------------------------------------
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { SystemIcons } from '../assets';
 
 // ----------------------------------------------------------------------
@@ -37,9 +37,14 @@ const DraggableComponent: React.FC<DraggableComponentProps> = React.memo(({ comp
       className={`
         ${component.color} ${component.hoverColor}
         border rounded-xl p-1 cursor-grab active:cursor-grabbing
-        transition-all duration-200 hover:shadow-lg hover:scale-[1.02]
-        hover:-translate-y-1 group
+        transition-shadow duration-200 hover:shadow-lg
+        group
       `}
+      style={{
+        // Ensure component is always rendered
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden',
+      }}
     >
       <div className='flex items-center space-x-3'>
         {/* Icon w/ SVG or fallback to emoji */}
@@ -86,6 +91,44 @@ const ComponentList: React.FC = React.memo(() => {
   const inputRef = useRef<HTMLInputElement>(null);
   // Search term for filtering
   const [searchTerm, setSearchTerm] = useState('');
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Force render during scroll to prevent momentum scrolling delays
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    let rafId: number;
+    const handleScroll = () => {
+      // Cancel any pending animation frame
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+      
+      // Force a repaint during scroll
+      rafId = requestAnimationFrame(() => {
+        // This forces the browser to recalculate styles and repaint
+        scrollContainer.style.transform = 'translateZ(0)';
+        
+        // Reset after a micro-task to avoid accumulating transforms
+        Promise.resolve().then(() => {
+          scrollContainer.style.transform = '';
+        });
+      });
+    };
+
+    // Listen to both scroll and touchmove for mobile momentum scrolling
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    scrollContainer.addEventListener('touchmove', handleScroll, { passive: true });
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+      scrollContainer.removeEventListener('touchmove', handleScroll);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, []);
 
   // handler to toggle input visibility for when user wants to add a custom component
   const handleShowInput = () => {
@@ -158,7 +201,17 @@ const ComponentList: React.FC = React.memo(() => {
       )}
 
       {/* SEARCH + COMPONENT GRID */}
-      <div className='flex-1 px-6 pt-4 overflow-y-auto'>
+      <div 
+        ref={scrollContainerRef}
+        className='flex-1 px-6 pt-4 overflow-y-auto'
+        style={{
+          // Enable GPU acceleration and prevent scroll jank
+          WebkitOverflowScrolling: 'touch',
+          willChange: 'scroll-position',
+          // Disable scroll-linked effects that might delay rendering
+          scrollBehavior: 'auto'
+        }}
+      >
         {/* SEARCH BAR */}
         <div className='mb-4'>
           <input
