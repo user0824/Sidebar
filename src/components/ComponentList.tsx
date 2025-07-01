@@ -77,8 +77,12 @@ const DraggableComponent: React.FC<DraggableComponentProps> = ({
 };
 
 const ComponentList: React.FC = () => {
+  const uniqueComponents = Array.from(
+    new Map(systemComponents.map((comp) => [comp.name, comp])).values()
+  ) as typeof systemComponents;
+
   const [components, setComponents] =
-    useState<typeof systemComponents>(systemComponents);
+    useState<typeof systemComponents>(uniqueComponents);
   const [showInput, setShowInput] = useState(false);
   const [newName, setNewName] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
