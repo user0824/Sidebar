@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 
 interface NodeCardProps {
   icon: string;
@@ -7,7 +7,7 @@ interface NodeCardProps {
   onDelete?: () => void;
 }
 
-const NodeCard: React.FC<NodeCardProps> = ({ icon, name, color, onDelete }) => {
+const NodeCard: FC<NodeCardProps> = ({ icon, name, color, onDelete }) => {
   return (
     <div
       className={`relative ${color} border border-gray-300 rounded-lg p-3 flex items-center space-x-2 min-w-[120px] shadow-md`}

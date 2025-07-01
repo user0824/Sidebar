@@ -1,4 +1,4 @@
-// @ts-nocheck
+// ReactFlowBoard now fully typed without @ts-nocheck
 import React, { useCallback, useRef, useState } from 'react';
 import {
   ReactFlow,
@@ -11,7 +11,6 @@ import {
   NodeChange,
   EdgeChange,
   NodeTypes,
-  NodeProps,
   ReactFlowProvider,
   ReactFlowInstance,
   Connection,
@@ -38,7 +37,13 @@ const fallbackEmojis: Record<string, string> = {
   'web-server': '🖥️',
 };
 
-const CustomNode: React.FC<NodeProps> = ({ data }) => {
+interface ComponentData extends Record<string, string> {
+  name: string;
+  icon: string;
+  color: string;
+}
+
+const CustomNode: React.FC<{ data: ComponentData }> = ({ data }) => {
   return (
     <div className='relative group'>
       {/* LEFT SIDE HANDLE (acts as source in loose mode) */}
@@ -48,7 +53,7 @@ const CustomNode: React.FC<NodeProps> = ({ data }) => {
         type='source'
         position={Position.Left}
         style={{ ...knobStyle, top: '50%', transform: 'translate(-50%, -50%)' }}
-        isValidConnection={(conn) => conn.source !== conn.target}
+        isValidConnection={(conn: Connection | Edge) => conn.source !== conn.target}
       />
 
       {/* NODE BODY */}
@@ -94,7 +99,7 @@ const CustomNode: React.FC<NodeProps> = ({ data }) => {
         type='source'
         position={Position.Right}
         style={{ ...knobStyle, top: '50%', transform: 'translate(50%, -50%)' }}
-        isValidConnection={(conn) => conn.source !== conn.target}
+        isValidConnection={(conn: Connection | Edge) => conn.source !== conn.target}
       />
     </div>
   );
@@ -129,7 +134,7 @@ const ReactFlowBoard: React.FC<ReactFlowBoardProps> = ({
   }, []);
 
   const onDrop = useCallback(
-    (event: React.DragEvent) => {
+    (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
 
       if (!reactFlowWrapper.current || !reactFlowInstance) return;
@@ -137,7 +142,14 @@ const ReactFlowBoard: React.FC<ReactFlowBoardProps> = ({
       const data = event.dataTransfer.getData('application/reactflow');
       if (!data) return;
 
-      const component = JSON.parse(data);
+      type DragComponent = {
+        id: string;
+        name: string;
+        icon: string;
+        color: string;
+      };
+
+      const component: DragComponent = JSON.parse(data);
 
       // position in React Flow coordinate system (provide screen coords directly)
       const position = reactFlowInstance.screenToFlowPosition({
