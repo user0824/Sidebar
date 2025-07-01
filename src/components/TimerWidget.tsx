@@ -37,7 +37,7 @@ const TimerWidget: React.FC = () => {
             placeholder='Minutes'
             value={minutesInput}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMinutesInput(e.target.value)}
-            className='w-20 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-md text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm'
+            className='w-20 px-2 py-1 bg-white/20 backdrop-blur-sm rounded-md text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-indigo-300 text-sm appearance-none'
           />
           <button
             onClick={handleStart}
