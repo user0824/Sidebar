@@ -21,63 +21,65 @@ const fallbackEmojis: Record<string, string> = {
   'web-server': '🖥️',
 };
 
-const DraggableComponent: React.FC<DraggableComponentProps> = React.memo(({ component }) => {
-  const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    event.dataTransfer.setData(
-      'application/reactflow',
-      JSON.stringify(component)
-    );
-    event.dataTransfer.effectAllowed = 'move';
-  };
+const DraggableComponent: React.FC<DraggableComponentProps> = React.memo(
+  ({ component }) => {
+    const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+      event.dataTransfer.setData(
+        'application/reactflow',
+        JSON.stringify(component)
+      );
+      event.dataTransfer.effectAllowed = 'move';
+    };
 
-  return (
-    <div
-      draggable
-      onDragStart={handleDragStart}
-      className={`
+    return (
+      <div
+        draggable
+        onDragStart={handleDragStart}
+        className={`
         ${component.color} ${component.hoverColor}
         border rounded-xl p-1 cursor-grab active:cursor-grabbing
         transition-shadow duration-200 hover:shadow-lg
         group
       `}
-      style={{
-        // Ensure component is always rendered
-        transform: 'translateZ(0)',
-        backfaceVisibility: 'hidden',
-      }}
-    >
-      <div className='flex items-center space-x-3'>
-        {/* Icon w/ SVG or fallback to emoji */}
-        <div className='flex-shrink-0 flex items-center h-10'>
-          {SystemIcons[component.icon as keyof typeof SystemIcons] ? (
-            <div className='w-10 h-10 flex items-center justify-center'>
-              {SystemIcons[component.icon as keyof typeof SystemIcons]()}
-            </div>
-          ) : (
-            <div className='w-10 h-10 rounded-lg bg-white/50 flex items-center justify-center text-lg'>
-              {fallbackEmojis[component.icon] || component.icon}
-            </div>
-          )}
-        </div>
-
-        {/* CONTENT */}
-        <div className='flex-1 min-w-0'>
-          <div className='flex items-center justify-between mb-1'>
-            <h3 className='font-semibold text-gray-800 text-sm leading-tight'>
-              {component.name}
-            </h3>
-            <span className='text-xs px-2 py-1 rounded-full bg-white/60 text-gray-600 font-medium'>
-              {component.category}
-            </span>
+        style={{
+          // Ensure component is always rendered
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+        }}
+      >
+        <div className='flex items-center space-x-3'>
+          {/* Icon w/ SVG or fallback to emoji */}
+          <div className='flex-shrink-0 flex items-center h-10'>
+            {SystemIcons[component.icon as keyof typeof SystemIcons] ? (
+              <div className='w-10 h-10 flex items-center justify-center'>
+                {SystemIcons[component.icon as keyof typeof SystemIcons]()}
+              </div>
+            ) : (
+              <div className='w-10 h-10 rounded-lg bg-white/50 flex items-center justify-center text-lg'>
+                {fallbackEmojis[component.icon] || component.icon}
+              </div>
+            )}
           </div>
-          <p className='text-xs text-gray-600 leading-relaxed'>
-            {component.description}
-          </p>
+
+          {/* CONTENT */}
+          <div className='flex-1 min-w-0'>
+            <div className='flex items-center justify-between mb-1'>
+              <h3 className='font-semibold text-gray-800 text-sm leading-tight'>
+                {component.name}
+              </h3>
+              <span className='text-xs px-2 py-1 rounded-full bg-white/60 text-gray-600 font-medium'>
+                {component.category}
+              </span>
+            </div>
+            <p className='text-xs text-gray-600 leading-relaxed'>
+              {component.description}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 const ComponentList: React.FC = React.memo(() => {
   const uniqueComponents = Array.from(
@@ -104,12 +106,12 @@ const ComponentList: React.FC = React.memo(() => {
       if (rafId) {
         cancelAnimationFrame(rafId);
       }
-      
+
       // Force a repaint during scroll
       rafId = requestAnimationFrame(() => {
         // This forces the browser to recalculate styles and repaint
         scrollContainer.style.transform = 'translateZ(0)';
-        
+
         // Reset after a micro-task to avoid accumulating transforms
         Promise.resolve().then(() => {
           scrollContainer.style.transform = '';
@@ -119,7 +121,9 @@ const ComponentList: React.FC = React.memo(() => {
 
     // Listen to both scroll and touchmove for mobile momentum scrolling
     scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-    scrollContainer.addEventListener('touchmove', handleScroll, { passive: true });
+    scrollContainer.addEventListener('touchmove', handleScroll, {
+      passive: true,
+    });
 
     return () => {
       scrollContainer.removeEventListener('scroll', handleScroll);
@@ -200,29 +204,27 @@ const ComponentList: React.FC = React.memo(() => {
         </button>
       )}
 
-      {/* SEARCH + COMPONENT GRID */}
-      <div 
+      {/* SEARCH BAR */}
+      <div className='px-6 pt-4 pb-4 flex justify-center'>
+        <input
+          type='text'
+          placeholder='Search components...'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className='w-full max-w-[calc(100%-1.5rem)] border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm'
+        />
+      </div>
+      <div
         ref={scrollContainerRef}
-        className='flex-1 px-6 pt-4 overflow-y-auto'
+        className='flex-1 px-6 overflow-y-auto'
         style={{
           // Enable GPU acceleration and prevent scroll jank
           WebkitOverflowScrolling: 'touch',
           willChange: 'scroll-position',
           // Disable scroll-linked effects that might delay rendering
-          scrollBehavior: 'auto'
+          scrollBehavior: 'auto',
         }}
       >
-        {/* SEARCH BAR */}
-        <div className='mb-4'>
-          <input
-            type='text'
-            placeholder='Search components...'
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className='w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm'
-          />
-        </div>
-
         {/* COMPONENTS */}
         <div className='space-y-3'>
           {filteredComponents.length ? (
