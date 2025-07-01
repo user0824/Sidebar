@@ -1,5 +1,4 @@
 // @ts-nocheck -- legacy file kept for reference, not part of active build
-import React from 'react';
 
 interface SystemBoardProps {
   placedComponents: any[];
