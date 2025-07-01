@@ -285,7 +285,7 @@ const Chat: React.FC = () => {
           <div className='flex items-center gap-3'>
             <input
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
               className='flex-1  hover:text-white hover:bg-white/10 border-2 border-white/20 rounded-xl px-4 py-2.5 focus:text-slate-900/80 placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-indigo-400/50 focus:border-indigo-400/30 transition-all duration-200'
               placeholder='Ask away...'
               disabled={isLoading}
