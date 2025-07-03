@@ -9,8 +9,6 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-
 ## 🚀 Overview
 
 Sidebar is an interactive web application that transforms system design interview preparation into an engaging, visual experience. Built to bridge the gap between theoretical knowledge and practical interview skills, it provides a realistic simulation environment where engineers can practice designing scalable systems with AI-powered feedback.
@@ -143,16 +141,6 @@ npm run dev
 ## 🤝 Contributing
 
 We welcome contributions! Whether it's new system components, interview scenarios, AI improvements, or bug fixes, check out our contributing guidelines to get started.
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-## 🌟 Why Sidebar?
-
-Traditional system design preparation often involves static diagrams and theoretical discussions. Sidebar makes it **interactive**, **visual**, and **intelligent** - providing the closest experience to a real interview while offering personalized feedback for continuous improvement.
-
-Perfect for engineers at any level looking to master one of the most challenging aspects of technical interviews.
 
 ---
 
